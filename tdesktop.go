@@ -39,7 +39,7 @@ func tdesktopDo(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("tdesktop", flag.ContinueOnError)
 	var (
 		tdata    string
-		output   OutputFlag
+		output   outputFlag
 		passcode string
 		idx      int
 	)

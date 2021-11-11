@@ -23,7 +23,7 @@ func botDo(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("bot", flag.ContinueOnError)
 	var (
 		token   string
-		output  OutputFlag
+		output  outputFlag
 		log     bool
 		appID   int
 		appHash string

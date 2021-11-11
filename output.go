@@ -5,17 +5,17 @@ import (
 	"os"
 )
 
-type OutputFlag struct {
+type outputFlag struct {
 	Value string
 	w     io.Writer
 	close func() error
 }
 
-func (o OutputFlag) String() string {
+func (o outputFlag) String() string {
 	return o.Value
 }
 
-func (o *OutputFlag) Set(s string) error {
+func (o *outputFlag) Set(s string) error {
 	o.Value = s
 
 	o.w = os.Stdout
@@ -30,7 +30,7 @@ func (o *OutputFlag) Set(s string) error {
 	return nil
 }
 
-func (o *OutputFlag) Write(data []byte) (int, error) {
+func (o *outputFlag) Write(data []byte) (int, error) {
 	if o.w == nil {
 		o.w = os.Stdout
 	}
@@ -38,7 +38,7 @@ func (o *OutputFlag) Write(data []byte) (int, error) {
 	return o.w.Write(data)
 }
 
-func (o *OutputFlag) Close() error {
+func (o *outputFlag) Close() error {
 	if o.close == nil {
 		return nil
 	}
