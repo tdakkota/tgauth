@@ -29,7 +29,11 @@ func getDefaultTDataPath() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(home, "Downloads", "Telegram", "tdata")
+
+	if runtime.GOOS == "windows" {
+		return filepath.Join(home, "AppData", "Roaming", "Telegram Desktop", "tdata")
+	}
+	return ""
 }
 
 var (
