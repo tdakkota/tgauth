@@ -42,11 +42,13 @@ func tdesktopDo(ctx context.Context, args []string) (rErr error) {
 		output   outputFlag
 		passcode string
 		idx      int
+		pretty   bool
 	)
 	s.StringVar(&tdata, "tdata", getDefaultTDataPath(), "path to tdata")
 	s.Var(&output, "output", "output (default: writes to stdout)")
 	s.StringVar(&passcode, "passcode", "", "passcode")
 	s.IntVar(&idx, "idx", -1, "account index")
+	s.BoolVar(&pretty, "pretty", false, "pretty json")
 
 	if err := s.Parse(args); err != nil {
 		return err
@@ -60,10 +62,10 @@ func tdesktopDo(ctx context.Context, args []string) (rErr error) {
 		return err
 	}
 
-	if idx >= len(accounts) {
+	switch {
+	case idx >= len(accounts):
 		return errors.Errorf("too big index %d, there are only %d account(s)", idx, len(accounts))
-	}
-	if idx < 0 && len(accounts) > 1 {
+	case idx < 0 && len(accounts) > 1:
 		// TODO(tdakkota): choose by username
 		options := make([]string, len(accounts))
 		for i, a := range accounts {
@@ -85,11 +87,18 @@ func tdesktopDo(ctx context.Context, args []string) (rErr error) {
 				break
 			}
 		}
+	case idx < 0:
+		idx = 0
 	}
+
 	data, err := session.TDesktopSession(accounts[idx])
 	if err != nil {
 		return errors.Wrap(err, "convert")
 	}
 
-	return json.NewEncoder(&output).Encode(data)
+	e := json.NewEncoder(&output)
+	if pretty {
+		e.SetIndent("", "\t")
+	}
+	return e.Encode(data)
 }
