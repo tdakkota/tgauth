@@ -5,8 +5,11 @@ import (
 	"flag"
 	"io"
 	"os"
+	"text/template"
 
+	"github.com/go-faster/errors"
 	"github.com/gotd/td/session"
+	"github.com/k0kubun/pp/v3"
 )
 
 type outputFlag struct {
@@ -50,19 +53,41 @@ func (o *outputFlag) Close() error {
 }
 
 type printOptions struct {
-	Pretty bool
-	Output outputFlag
+	Pretty   bool
+	Template string
+	Format   string
+	Output   outputFlag
 }
 
 func (p *printOptions) install(set *flag.FlagSet) {
-	set.BoolVar(&p.Pretty, "pretty", false, "pretty json")
+	set.BoolVar(&p.Pretty, "pretty", false, "Prettify (if format is json)")
+	set.StringVar(&p.Template, "template", "", "Go template for formatting")
+	set.StringVar(&p.Format, "format", "json", "Printer format (available: json, pp)")
 	set.Var(&p.Output, "output", "output (default: writes to stdout)")
 }
 
 func printSession(data *session.Data, opts printOptions) error {
-	e := json.NewEncoder(&opts.Output)
-	if opts.Pretty {
-		e.SetIndent("", "\t")
+	var got interface{} = data
+	if tmpl := opts.Template; tmpl != "" {
+		t, err := template.New("print").Parse(tmpl)
+		if err != nil {
+			return err
+		}
+		return t.Execute(&opts.Output, t)
 	}
-	return e.Encode(data)
+
+	switch opts.Format {
+	case "pp":
+		_, err := pp.Fprintln(&opts.Output, data)
+		return err
+	case "json":
+		e := json.NewEncoder(&opts.Output)
+		if opts.Pretty {
+			e.SetIndent("", "\t")
+		}
+		return e.Encode(got)
+	default:
+		return errors.Errorf("unknown format %q", opts.Format)
+	}
+
 }
