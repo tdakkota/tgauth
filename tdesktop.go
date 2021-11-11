@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
+	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
-	"strconv"
+	"runtime"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/cristalhq/acmd"
@@ -33,25 +34,37 @@ func getDefaultTDataPath() string {
 
 var (
 	errWrongPasscode = errors.New("wrong passcode")
+	errTDataRequired = errors.New("argument tdata is required")
 )
 
 func tdesktopDo(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("tdesktop", flag.ContinueOnError)
 	var (
-		tdata    string
-		output   outputFlag
-		passcode string
-		idx      int
-		pretty   bool
+		tdata      string
+		passcode   string
+		idx        int
+		printFlags printOptions
 	)
 	s.StringVar(&tdata, "tdata", getDefaultTDataPath(), "path to tdata")
-	s.Var(&output, "output", "output (default: writes to stdout)")
 	s.StringVar(&passcode, "passcode", "", "passcode")
 	s.IntVar(&idx, "idx", -1, "account index")
-	s.BoolVar(&pretty, "pretty", false, "pretty json")
+	printFlags.install(s)
 
 	if err := s.Parse(args); err != nil {
 		return err
+	}
+
+	if tdata == "" {
+		return errTDataRequired
+	}
+	dir, err := os.Stat(tdata)
+	switch {
+	case errors.Is(err, fs.ErrNotExist):
+		return errors.Errorf("can't find tdata (path: %q)", tdata)
+	case err != nil:
+		return err
+	case !dir.IsDir():
+		return errors.Errorf("%q is not a directory", tdata)
 	}
 
 	accounts, err := tdesktop.Read(tdata, []byte(passcode))
@@ -69,7 +82,8 @@ func tdesktopDo(ctx context.Context, args []string) (rErr error) {
 		// TODO(tdakkota): choose by username
 		options := make([]string, len(accounts))
 		for i, a := range accounts {
-			options[i] = strconv.FormatUint(a.Authorization.UserID, 10)
+			auth := a.Authorization
+			options[i] = fmt.Sprintf("User %d (test: %t)", auth.UserID, a.Config.Environment.Test())
 		}
 
 		sel := &survey.Select{
@@ -96,9 +110,5 @@ func tdesktopDo(ctx context.Context, args []string) (rErr error) {
 		return errors.Wrap(err, "convert")
 	}
 
-	e := json.NewEncoder(&output)
-	if pretty {
-		e.SetIndent("", "\t")
-	}
-	return e.Encode(data)
+	return printSession(data, printFlags)
 }

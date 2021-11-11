@@ -1,8 +1,12 @@
 package main
 
 import (
+	"encoding/json"
+	"flag"
 	"io"
 	"os"
+
+	"github.com/gotd/td/session"
 )
 
 type outputFlag struct {
@@ -43,4 +47,22 @@ func (o *outputFlag) Close() error {
 		return nil
 	}
 	return o.close()
+}
+
+type printOptions struct {
+	Pretty bool
+	Output outputFlag
+}
+
+func (p *printOptions) install(set *flag.FlagSet) {
+	set.BoolVar(&p.Pretty, "pretty", false, "pretty json")
+	set.Var(&p.Output, "output", "output (default: writes to stdout)")
+}
+
+func printSession(data *session.Data, opts printOptions) error {
+	e := json.NewEncoder(&opts.Output)
+	if opts.Pretty {
+		e.SetIndent("", "\t")
+	}
+	return e.Encode(data)
 }

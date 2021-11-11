@@ -22,17 +22,17 @@ func botCmd() acmd.Command {
 func botDo(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("bot", flag.ContinueOnError)
 	var (
-		token   string
-		output  outputFlag
-		log     bool
-		appID   int
-		appHash string
+		token      string
+		log        bool
+		appID      int
+		appHash    string
+		printFlags printOptions
 	)
 	s.StringVar(&token, "token", "", "Bot token")
-	s.Var(&output, "output", "output (default: writes to stdout)")
 	s.IntVar(&appID, "app-id", constant.TestAppID, "App id (default: Telegram Desktop test)")
 	s.StringVar(&appHash, "app-hash", constant.TestAppHash, "App hash (default: Telegram Desktop test)")
 	s.BoolVar(&log, "log", false, "Verbose log")
+	printFlags.install(s)
 
 	if err := s.Parse(args); err != nil {
 		return err
@@ -52,5 +52,12 @@ func botDo(ctx context.Context, args []string) (rErr error) {
 		return err
 	}
 
-	return storage.Dump(&output)
+	data, err := (&session.Loader{
+		Storage: &storage,
+	}).Load(context.Background())
+	if err != nil {
+		return err
+	}
+
+	return printSession(data, printFlags)
 }
