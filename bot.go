@@ -5,8 +5,7 @@ import (
 	"flag"
 
 	"github.com/cristalhq/acmd"
-	"github.com/gotd/td/constant"
-	"github.com/gotd/td/session"
+	"github.com/go-faster/errors"
 	"github.com/gotd/td/telegram"
 )
 
@@ -23,38 +22,27 @@ func botDo(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("bot", flag.ContinueOnError)
 	var (
 		token      string
-		log        bool
-		appID      int
-		appHash    string
+		gotdFlags  gotdOptions
 		printFlags printOptions
 	)
 	s.StringVar(&token, "token", "", "Bot token")
-	s.IntVar(&appID, "app-id", constant.TestAppID, "App id (default: Telegram Desktop test)")
-	s.StringVar(&appHash, "app-hash", constant.TestAppHash, "App hash (default: Telegram Desktop test)")
-	s.BoolVar(&log, "log", false, "Verbose log")
+	gotdFlags.install(s)
 	printFlags.install(s)
 
 	if err := s.Parse(args); err != nil {
 		return err
 	}
 
-	var storage session.StorageMemory
-	client := telegram.NewClient(appID, appHash, telegram.Options{
-		SessionStorage: &storage,
-	})
-	if err := client.Run(ctx, func(ctx context.Context) error {
-		_, err := client.Auth().Bot(ctx, token)
-		if err != nil {
-			return err
-		}
-		return nil
-	}); err != nil {
-		return err
-	}
-
-	data, err := (&session.Loader{
-		Storage: &storage,
-	}).Load(context.Background())
+	data, err := gotdFlags.GetSession(
+		ctx, telegram.Options{},
+		func(ctx context.Context, client *telegram.Client) error {
+			_, err := client.Auth().Bot(ctx, token)
+			if err != nil {
+				return errors.Wrap(err, "bot login")
+			}
+			return nil
+		},
+	)
 	if err != nil {
 		return err
 	}
