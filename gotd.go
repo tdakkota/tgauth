@@ -8,6 +8,7 @@ import (
 	"github.com/gotd/td/constant"
 	"github.com/gotd/td/session"
 	"github.com/gotd/td/telegram"
+	"github.com/gotd/td/telegram/dcs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -15,6 +16,7 @@ import (
 type gotdOptions struct {
 	AppID     int
 	AppHash   string
+	Test      bool
 	Log       bool
 	LogLevel  zapcore.Level
 	LogFormat string
@@ -23,6 +25,7 @@ type gotdOptions struct {
 func (p *gotdOptions) install(set *flag.FlagSet) {
 	set.IntVar(&p.AppID, "app-id", constant.TestAppID, "AppID (default: Telegram Desktop test)")
 	set.StringVar(&p.AppHash, "app-hash", constant.TestAppHash, "AppHash (default: Telegram Desktop test)")
+	set.BoolVar(&p.Test, "test", false, "Use test server")
 	set.BoolVar(&p.Log, "log", false, "enable logging")
 	set.Var(&p.LogLevel, "loglevel", "logging level")
 	set.StringVar(&p.LogFormat, "logformat", "console", "log format (json or console)")
@@ -43,6 +46,9 @@ func (p gotdOptions) Client(opts telegram.Options) (*telegram.Client, error) {
 			return nil, errors.Wrap(err, "create logger")
 		}
 		opts.Logger = logger
+	}
+	if p.Test {
+		opts.DCList = dcs.Test()
 	}
 	return telegram.NewClient(p.AppID, p.AppHash, opts), nil
 }
