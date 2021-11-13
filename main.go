@@ -12,6 +12,8 @@ const description = `Simple CLI tool for creating gotd sessions.`
 func main() {
 	cmds := []acmd.Command{
 		botCmd(),
+		userCmd(),
+		qrCmd(),
 		tdesktopCmd(),
 	}
 	cfg := acmd.Config{
