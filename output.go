@@ -89,5 +89,4 @@ func printSession(data *session.Data, opts printOptions) error {
 	default:
 		return errors.Errorf("unknown format %q", opts.Format)
 	}
-
 }

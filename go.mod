@@ -9,7 +9,9 @@ require (
 	github.com/gotd/td v0.51.3-0.20211113154422-9f621862e10d
 	github.com/k0kubun/pp/v3 v3.0.7
 	github.com/mdp/qrterminal/v3 v3.0.0
+	go.uber.org/multierr v1.7.0
 	go.uber.org/zap v1.19.1
+	rsc.io/qr v0.2.0
 )
 
 require (
@@ -24,7 +26,6 @@ require (
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
 	github.com/ogen-go/errors v0.4.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
-	go.uber.org/multierr v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
 	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
@@ -32,5 +33,4 @@ require (
 	golang.org/x/term v0.0.0-20210503060354-a79de5458b56 // indirect
 	golang.org/x/text v0.3.6 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
-	rsc.io/qr v0.2.0 // indirect
 )
