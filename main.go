@@ -17,6 +17,7 @@ func main() {
 		qrCmd(),
 		tdesktopCmd(),
 		noauthCmd(),
+		tryCmd(),
 	}
 	cfg := acmd.Config{
 		AppDescription: description,

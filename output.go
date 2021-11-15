@@ -66,27 +66,30 @@ func (p *printOptions) install(set *flag.FlagSet) {
 	set.Var(&p.Output, "output", "output (default: writes to stdout)")
 }
 
-func printSession(data *session.Data, opts printOptions) error {
-	var got interface{} = data
-	if tmpl := opts.Template; tmpl != "" {
+func (p printOptions) printData(data interface{}) error {
+	if tmpl := p.Template; tmpl != "" {
 		t, err := template.New("print").Parse(tmpl)
 		if err != nil {
 			return err
 		}
-		return t.Execute(&opts.Output, t)
+		return t.Execute(&p.Output, t)
 	}
 
-	switch opts.Format {
+	switch p.Format {
 	case "pp":
-		_, err := pp.Fprintln(&opts.Output, data)
+		_, err := pp.Fprintln(&p.Output, data)
 		return err
 	case "json":
-		e := json.NewEncoder(&opts.Output)
-		if opts.Pretty {
+		e := json.NewEncoder(&p.Output)
+		if p.Pretty {
 			e.SetIndent("", "\t")
 		}
-		return e.Encode(got)
+		return e.Encode(data)
 	default:
-		return errors.Errorf("unknown format %q", opts.Format)
+		return errors.Errorf("unknown format %q", p.Format)
 	}
+}
+
+func printSession(data *session.Data, opts printOptions) error {
+	return opts.printData(data)
 }
