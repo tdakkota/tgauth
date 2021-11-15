@@ -16,6 +16,7 @@ import (
 type gotdOptions struct {
 	AppID     int
 	AppHash   string
+	DC        int
 	Test      bool
 	Log       bool
 	LogLevel  zapcore.Level
@@ -25,6 +26,7 @@ type gotdOptions struct {
 func (p *gotdOptions) install(set *flag.FlagSet) {
 	set.IntVar(&p.AppID, "app-id", constant.TestAppID, "AppID (default: Telegram Desktop test)")
 	set.StringVar(&p.AppHash, "app-hash", constant.TestAppHash, "AppHash (default: Telegram Desktop test)")
+	set.IntVar(&p.DC, "DC", 2, "DC ID to use")
 	set.BoolVar(&p.Test, "test", false, "Use test server")
 	set.BoolVar(&p.Log, "log", false, "enable logging")
 	set.Var(&p.LogLevel, "loglevel", "logging level")
@@ -32,6 +34,7 @@ func (p *gotdOptions) install(set *flag.FlagSet) {
 }
 
 func (p gotdOptions) Client(opts telegram.Options) (*telegram.Client, error) {
+	opts.DC = p.DC
 	if opts.Logger == nil && p.Log {
 		var zapCfg zap.Config
 		switch p.LogFormat {

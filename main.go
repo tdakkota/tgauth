@@ -13,6 +13,7 @@ func main() {
 	cmds := []acmd.Command{
 		botCmd(),
 		userCmd(),
+		testCmd(),
 		qrCmd(),
 		tdesktopCmd(),
 		noauthCmd(),
