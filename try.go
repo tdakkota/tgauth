@@ -3,8 +3,13 @@ package main
 import (
 	"context"
 	"flag"
+	"io"
+	"os"
+	"path/filepath"
 
 	"github.com/cristalhq/acmd"
+	"github.com/go-faster/errors"
+	"github.com/gotd/td/session"
 	"github.com/gotd/td/telegram"
 )
 
@@ -20,9 +25,11 @@ func tryCmd() acmd.Command {
 func tryDo(ctx context.Context, args []string) error {
 	s := flag.NewFlagSet("try", flag.ContinueOnError)
 	var (
-		gotdFlags  gotdOptions
-		printFlags printOptions
+		sessionFile string
+		gotdFlags   gotdOptions
+		printFlags  printOptions
 	)
+	s.StringVar(&sessionFile, "session", "", "Path to session file (default: reads from stdin)")
 	gotdFlags.install(s)
 	printFlags.install(s)
 
@@ -30,7 +37,31 @@ func tryDo(ctx context.Context, args []string) error {
 		return err
 	}
 
-	client, err := gotdFlags.Client(telegram.Options{})
+	var (
+		data []byte
+	)
+	if sessionFile == "" {
+		d, err := io.ReadAll(os.Stdin)
+		if err != nil {
+			return err
+		}
+		data = d
+	} else {
+		d, err := os.ReadFile(filepath.Clean(sessionFile))
+		if err != nil {
+			return err
+		}
+		data = d
+	}
+
+	storage := &session.StorageMemory{}
+	if err := storage.StoreSession(ctx, data); err != nil {
+		return errors.Wrap(err, "invalid session")
+	}
+
+	client, err := gotdFlags.Client(telegram.Options{
+		SessionStorage: storage,
+	})
 	if err != nil {
 		return err
 	}
