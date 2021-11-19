@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"io"
@@ -90,6 +91,9 @@ func (p printOptions) printData(data interface{}) error {
 	}
 }
 
-func printSession(data *session.Data, opts printOptions) error {
+func printSession(ctx context.Context, data *session.Data, opts printOptions) error {
+	if ctx.Err() != nil {
+		return nil
+	}
 	return opts.printData(data)
 }

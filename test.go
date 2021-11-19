@@ -56,5 +56,5 @@ func testDo(ctx context.Context, args []string) (rErr error) {
 		return err
 	}
 
-	return printSession(data, printFlags)
+	return printSession(ctx, data, printFlags)
 }

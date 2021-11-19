@@ -114,5 +114,5 @@ func tdesktopDo(ctx context.Context, args []string) (rErr error) {
 		return errors.Wrap(err, "convert")
 	}
 
-	return printSession(data, printFlags)
+	return printSession(ctx, data, printFlags)
 }
