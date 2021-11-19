@@ -33,6 +33,10 @@ func botDo(ctx context.Context, args []string) (rErr error) {
 		return err
 	}
 
+	if token == "" {
+		return errors.New("token option is required")
+	}
+
 	data, err := gotdFlags.GetSession(
 		ctx, telegram.Options{},
 		func(ctx context.Context, client *telegram.Client) error {
