@@ -6,6 +6,7 @@ import (
 	"flag"
 	"io"
 	"os"
+	"path/filepath"
 	"text/template"
 
 	"github.com/go-faster/errors"
@@ -28,7 +29,7 @@ func (o *outputFlag) Set(s string) error {
 
 	o.w = os.Stdout
 	if s != "" {
-		file, err := os.Create(s)
+		file, err := os.Create(filepath.Clean(s))
 		if err != nil {
 			return err
 		}
