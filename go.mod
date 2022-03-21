@@ -3,7 +3,7 @@ module github.com/tdakkota/tgauth
 go 1.17
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.2
+	github.com/AlecAivazis/survey/v2 v2.3.3
 	github.com/cristalhq/acmd v0.5.5
 	github.com/go-faster/errors v0.5.0
 	github.com/gotd/td v0.55.2
