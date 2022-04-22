@@ -6,7 +6,7 @@ require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
 	github.com/cristalhq/acmd v0.5.7
 	github.com/go-faster/errors v0.5.0
-	github.com/gotd/td v0.56.0
+	github.com/gotd/td v0.57.0
 	github.com/k0kubun/pp/v3 v3.1.0
 	github.com/mdp/qrterminal/v3 v3.0.0
 	go.uber.org/multierr v1.8.0
@@ -15,8 +15,8 @@ require (
 )
 
 require (
-	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
-	github.com/go-faster/jx v0.32.2 // indirect
+	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
+	github.com/go-faster/jx v0.33.0 // indirect
 	github.com/go-faster/xor v0.3.0 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
