@@ -6,7 +6,7 @@ require (
 	github.com/AlecAivazis/survey/v2 v2.3.4
 	github.com/cristalhq/acmd v0.5.7
 	github.com/go-faster/errors v0.5.0
-	github.com/gotd/td v0.58.0
+	github.com/gotd/td v0.59.0
 	github.com/k0kubun/pp/v3 v3.1.0
 	github.com/mdp/qrterminal/v3 v3.0.0
 	go.uber.org/multierr v1.8.0
@@ -21,7 +21,7 @@ require (
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/klauspost/compress v1.15.2 // indirect
+	github.com/klauspost/compress v1.15.4 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
