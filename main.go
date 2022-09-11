@@ -1,3 +1,4 @@
+// Command tgauth is a simple CLI tool to create Telegram/gotd sessions.
 package main
 
 import (

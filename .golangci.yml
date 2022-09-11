@@ -73,10 +73,6 @@ linters:
 issues:
   exclude-use-default: false
   exclude-rules:
-    - linters: [ gocritic ]
-      text: "commentedOutCode"
-      source: "SHA1"
-
     # Allow embed globals
     - source: "embed\\.FS"
       linters: [ gochecknoglobals ]
