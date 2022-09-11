@@ -68,7 +68,7 @@ func (p *printOptions) install(set *flag.FlagSet) {
 	set.Var(&p.Output, "output", "output (default: writes to stdout)")
 }
 
-func (p printOptions) printData(data interface{}) error {
+func (p printOptions) printData(data any) error {
 	if tmpl := p.Template; tmpl != "" {
 		t, err := template.New("print").Parse(tmpl)
 		if err != nil {
