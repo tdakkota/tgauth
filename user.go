@@ -15,8 +15,7 @@ func userCmd() acmd.Command {
 	return acmd.Command{
 		Name:        "user",
 		Description: "Create session via plain user authorization",
-		Do:          userDo,
-		Subcommands: nil,
+		ExecFunc:    userExec,
 	}
 }
 
@@ -101,7 +100,7 @@ func (s surveyAuth) Code(ctx context.Context, sentCode *tg.AuthSentCode) (string
 	return s.askOneString("", "Activation code", "The code sent by Telegram "+via, length)
 }
 
-func userDo(ctx context.Context, args []string) (rErr error) {
+func userExec(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("user", flag.ContinueOnError)
 	var (
 		ua         surveyAuth

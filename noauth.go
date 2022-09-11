@@ -12,12 +12,11 @@ func noauthCmd() acmd.Command {
 	return acmd.Command{
 		Name:        "noauth",
 		Description: "Create session without authorization",
-		Do:          noauthDo,
-		Subcommands: nil,
+		ExecFunc:    noauthExec,
 	}
 }
 
-func noauthDo(ctx context.Context, args []string) (rErr error) {
+func noauthExec(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("noauth", flag.ContinueOnError)
 	var (
 		gotdFlags  gotdOptions

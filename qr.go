@@ -20,12 +20,11 @@ func qrCmd() acmd.Command {
 	return acmd.Command{
 		Name:        "qr",
 		Description: "Create session via QR login flow",
-		Do:          qrDo,
-		Subcommands: nil,
+		ExecFunc:    qrExec,
 	}
 }
 
-func qrDo(ctx context.Context, args []string) (rErr error) {
+func qrExec(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("qr", flag.ContinueOnError)
 	var (
 		pngPath    string

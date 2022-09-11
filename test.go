@@ -13,12 +13,11 @@ func testCmd() acmd.Command {
 	return acmd.Command{
 		Name:        "test",
 		Description: "Create test user session",
-		Do:          testDo,
-		Subcommands: nil,
+		ExecFunc:    testExec,
 	}
 }
 
-func testDo(ctx context.Context, args []string) (rErr error) {
+func testExec(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("test", flag.ContinueOnError)
 	var (
 		phone      string

@@ -17,12 +17,11 @@ func tryCmd() acmd.Command {
 	return acmd.Command{
 		Name:        "try",
 		Description: "Print user info",
-		Do:          tryDo,
-		Subcommands: nil,
+		ExecFunc:    tryExec,
 	}
 }
 
-func tryDo(ctx context.Context, args []string) error {
+func tryExec(ctx context.Context, args []string) error {
 	s := flag.NewFlagSet("try", flag.ContinueOnError)
 	var (
 		sessionFile string

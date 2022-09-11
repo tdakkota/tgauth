@@ -13,12 +13,11 @@ func botCmd() acmd.Command {
 	return acmd.Command{
 		Name:        "bot",
 		Description: "Create session via bot token authorization",
-		Do:          botDo,
-		Subcommands: nil,
+		ExecFunc:    botExec,
 	}
 }
 
-func botDo(ctx context.Context, args []string) (rErr error) {
+func botExec(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("bot", flag.ContinueOnError)
 	var (
 		token      string

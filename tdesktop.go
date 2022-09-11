@@ -20,7 +20,7 @@ func tdesktopCmd() acmd.Command {
 	return acmd.Command{
 		Name:        "tdesktop",
 		Description: "Create session using Telegram Desktop storage",
-		Do:          tdesktopDo,
+		ExecFunc:    tdesktopExec,
 	}
 }
 
@@ -41,7 +41,7 @@ var (
 	errTDataRequired = errors.New("argument tdata is required")
 )
 
-func tdesktopDo(ctx context.Context, args []string) (rErr error) {
+func tdesktopExec(ctx context.Context, args []string) (rErr error) {
 	s := flag.NewFlagSet("tdesktop", flag.ContinueOnError)
 	var (
 		tdata      string
