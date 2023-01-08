@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
-	github.com/cristalhq/acmd v0.10.0
+	github.com/cristalhq/acmd v0.11.0
 	github.com/go-faster/errors v0.6.1
 	github.com/gotd/td v0.75.0
 	github.com/k0kubun/pp/v3 v3.2.0
