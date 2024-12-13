@@ -9,7 +9,7 @@ require (
 	github.com/gotd/td v0.75.0
 	github.com/k0kubun/pp/v3 v3.2.0
 	github.com/mdp/qrterminal/v3 v3.0.0
-	go.uber.org/multierr v1.9.0
+	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.24.0
 	rsc.io/qr v0.2.0
 )
