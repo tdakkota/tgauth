@@ -10,7 +10,7 @@ require (
 	github.com/k0kubun/pp/v3 v3.4.1
 	github.com/mdp/qrterminal/v3 v3.2.0
 	go.uber.org/multierr v1.11.0
-	go.uber.org/zap v1.24.0
+	go.uber.org/zap v1.27.0
 	rsc.io/qr v0.2.0
 )
 
