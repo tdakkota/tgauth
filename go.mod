@@ -8,7 +8,7 @@ require (
 	github.com/go-faster/errors v0.7.1
 	github.com/gotd/td v0.122.0
 	github.com/k0kubun/pp/v3 v3.4.1
-	github.com/mdp/qrterminal/v3 v3.2.0
+	github.com/mdp/qrterminal/v3 v3.2.1
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.27.0
 	rsc.io/qr v0.2.0
@@ -28,7 +28,7 @@ require (
 	github.com/gotd/neo v0.1.5 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b // indirect
 	github.com/ogen-go/ogen v1.10.1 // indirect
