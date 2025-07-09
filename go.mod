@@ -7,7 +7,7 @@ require (
 	github.com/cristalhq/acmd v0.12.0
 	github.com/go-faster/errors v0.7.1
 	github.com/gotd/td v0.126.0
-	github.com/k0kubun/pp/v3 v3.4.1
+	github.com/k0kubun/pp/v3 v3.5.0
 	github.com/mdp/qrterminal/v3 v3.2.1
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.27.0
