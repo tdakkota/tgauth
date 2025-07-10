@@ -6,7 +6,7 @@ require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/cristalhq/acmd v0.12.0
 	github.com/go-faster/errors v0.7.1
-	github.com/gotd/td v0.126.0
+	github.com/gotd/td v0.127.0
 	github.com/k0kubun/pp/v3 v3.5.0
 	github.com/mdp/qrterminal/v3 v3.2.1
 	go.uber.org/multierr v1.11.0
