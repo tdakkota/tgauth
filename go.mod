@@ -3,7 +3,7 @@ module github.com/tdakkota/tgauth
 go 1.18
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.6
+	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/cristalhq/acmd v0.9.1
 	github.com/go-faster/errors v0.6.1
 	github.com/gotd/td v0.68.1
@@ -34,6 +34,6 @@ require (
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220728004956-3c1f35247d10 // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.4.0 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 )
