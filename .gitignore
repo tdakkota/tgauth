@@ -10,3 +10,5 @@ gen
 *.test
 *.test.exe
 *.out
+
+/tgauth
