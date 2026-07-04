@@ -22,7 +22,7 @@ func tryCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "try",
 		Short: "Print user info",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
 			var data []byte

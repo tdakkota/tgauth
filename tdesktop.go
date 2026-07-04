@@ -42,7 +42,7 @@ func tdesktopCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tdesktop",
 		Short: "Create session using Telegram Desktop storage",
-		RunE: func(cmd *cobra.Command, args []string) (rErr error) {
+		RunE: func(cmd *cobra.Command, _ []string) (rErr error) {
 			ctx := cmd.Context()
 
 			if tdata == "" {

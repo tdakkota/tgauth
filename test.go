@@ -18,7 +18,7 @@ func testCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "test",
 		Short: "Create test user session",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
 			gotdFlags.Test = true

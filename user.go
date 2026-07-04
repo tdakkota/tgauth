@@ -43,20 +43,20 @@ func (s surveyAuth) askOneString(original, msg, help string, length int) (code s
 	return code, err
 }
 
-func (s surveyAuth) Phone(ctx context.Context) (string, error) {
+func (s surveyAuth) Phone(_ context.Context) (string, error) {
 	return s.askOneString(s.phone, "Your phone number", "", 0)
 }
 
-func (s surveyAuth) Password(ctx context.Context) (string, error) {
+func (s surveyAuth) Password(_ context.Context) (string, error) {
 	return s.askOneString(s.password, "Your password", "", 0)
 }
 
-func (s surveyAuth) AcceptTermsOfService(ctx context.Context, tos tg.HelpTermsOfService) error {
+func (s surveyAuth) AcceptTermsOfService(_ context.Context, tos tg.HelpTermsOfService) error {
 	// TODO(tdakkota): support signup?
 	return &auth.SignUpRequired{TermsOfService: tos}
 }
 
-func (s surveyAuth) SignUp(ctx context.Context) (auth.UserInfo, error) {
+func (s surveyAuth) SignUp(_ context.Context) (auth.UserInfo, error) {
 	firstName, err := s.askOneString("", "First Name", "", 0)
 	if err != nil {
 		return auth.UserInfo{}, err
@@ -71,7 +71,7 @@ func (s surveyAuth) SignUp(ctx context.Context) (auth.UserInfo, error) {
 	}, nil
 }
 
-func (s surveyAuth) Code(ctx context.Context, sentCode *tg.AuthSentCode) (string, error) {
+func (s surveyAuth) Code(_ context.Context, sentCode *tg.AuthSentCode) (string, error) {
 	var (
 		length int
 		via    string
@@ -102,7 +102,7 @@ func userCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "user",
 		Short: "Create session via plain user authorization",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
 			data, err := gotdFlags.GetSession(

@@ -16,12 +16,12 @@ func noauthCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "noauth",
 		Short: "Create session without authorization",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
 			data, err := gotdFlags.GetSession(
 				ctx, telegram.Options{},
-				func(ctx context.Context, client *telegram.Client) error {
+				func(_ context.Context, _ *telegram.Client) error {
 					return nil
 				},
 			)

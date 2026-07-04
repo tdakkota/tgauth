@@ -18,7 +18,7 @@ func botCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "bot",
 		Short: "Create session via bot token authorization",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
 			if token == "" {

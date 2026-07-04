@@ -25,7 +25,7 @@ func qrCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "qr",
 		Short: "Create session via QR login flow",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx := cmd.Context()
 
 			d := tg.NewUpdateDispatcher()
@@ -35,7 +35,7 @@ func qrCmd() *cobra.Command {
 					UpdateHandler: d,
 				},
 				func(ctx context.Context, client *telegram.Client) (rErr error) {
-					show := func(ctx context.Context, token qrlogin.Token) error {
+					show := func(_ context.Context, token qrlogin.Token) error {
 						qrterminal.Generate(token.URL(), qrterminal.L, os.Stdout)
 						return nil
 					}
@@ -45,7 +45,7 @@ func qrCmd() *cobra.Command {
 							return err
 						}
 						defer multierr.AppendInvoke(&rErr, multierr.Close(f))
-						show = func(ctx context.Context, token qrlogin.Token) error {
+						show = func(_ context.Context, token qrlogin.Token) error {
 							encoded, err := qr.Encode(token.URL(), qrterminal.L)
 							if err != nil {
 								return errors.Wrap(err, "encode QR")
