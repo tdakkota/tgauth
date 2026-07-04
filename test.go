@@ -2,58 +2,55 @@ package main
 
 import (
 	"context"
-	"flag"
 
-	"github.com/cristalhq/acmd"
 	"github.com/go-faster/errors"
 	"github.com/gotd/td/telegram"
+	"github.com/spf13/cobra"
 )
 
-func testCmd() acmd.Command {
-	return acmd.Command{
-		Name:        "test",
-		Description: "Create test user session",
-		ExecFunc:    testExec,
-	}
-}
-
-func testExec(ctx context.Context, args []string) (rErr error) {
-	s := flag.NewFlagSet("test", flag.ContinueOnError)
+func testCmd() *cobra.Command {
 	var (
 		phone      string
 		gotdFlags  gotdOptions
 		printFlags printOptions
 	)
-	s.StringVar(&phone, "phone", "", "Phone to acquire")
-	gotdFlags.install(s)
-	printFlags.install(s)
 
-	if err := s.Parse(args); err != nil {
-		return err
-	}
+	cmd := &cobra.Command{
+		Use:   "test",
+		Short: "Create test user session",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
 
-	gotdFlags.Test = true
+			gotdFlags.Test = true
 
-	data, err := gotdFlags.GetSession(
-		ctx, telegram.Options{},
-		func(ctx context.Context, client *telegram.Client) error {
-			dc := client.Config().ThisDC
+			data, err := gotdFlags.GetSession(
+				ctx, telegram.Options{},
+				func(ctx context.Context, client *telegram.Client) error {
+					dc := client.Config().ThisDC
 
-			var err error
-			if phone != "" {
-				err = client.Auth().TestUser(ctx, phone, dc)
-			} else {
-				err = client.Auth().Test(ctx, dc)
-			}
+					var err error
+					if phone != "" {
+						err = client.Auth().TestUser(ctx, phone, dc)
+					} else {
+						err = client.Auth().Test(ctx, dc)
+					}
+					if err != nil {
+						return errors.Wrap(err, "login")
+					}
+					return nil
+				},
+			)
 			if err != nil {
-				return errors.Wrap(err, "login")
+				return err
 			}
-			return nil
+
+			return printSession(ctx, data, printFlags)
 		},
-	)
-	if err != nil {
-		return err
 	}
 
-	return printSession(ctx, data, printFlags)
+	cmd.Flags().StringVar(&phone, "phone", "", "Phone to acquire")
+	gotdFlags.install(cmd.Flags())
+	printFlags.install(cmd.Flags())
+
+	return cmd
 }

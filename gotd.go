@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	"flag"
 
 	"github.com/go-faster/errors"
+	"github.com/gotd/log/logzap"
 	"github.com/gotd/td/constant"
 	"github.com/gotd/td/session"
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/telegram/dcs"
+	"github.com/spf13/pflag"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -23,13 +24,20 @@ type gotdOptions struct {
 	LogFormat string
 }
 
-func (p *gotdOptions) install(set *flag.FlagSet) {
+// levelValue adapts zapcore.Level (a flag.Value) to pflag.Value, which also requires Type().
+type levelValue struct {
+	*zapcore.Level
+}
+
+func (levelValue) Type() string { return "level" }
+
+func (p *gotdOptions) install(set *pflag.FlagSet) {
 	set.IntVar(&p.AppID, "app-id", constant.TestAppID, "AppID (default: Telegram Desktop test)")
 	set.StringVar(&p.AppHash, "app-hash", constant.TestAppHash, "AppHash (default: Telegram Desktop test)")
 	set.IntVar(&p.DC, "DC", 2, "DC ID to use")
 	set.BoolVar(&p.Test, "test", false, "Use test server")
 	set.BoolVar(&p.Log, "log", false, "enable logging")
-	set.Var(&p.LogLevel, "loglevel", "logging level")
+	set.Var(levelValue{&p.LogLevel}, "loglevel", "logging level")
 	set.StringVar(&p.LogFormat, "logformat", "console", "log format (json or console)")
 }
 
@@ -48,7 +56,7 @@ func (p gotdOptions) Client(opts telegram.Options) (*telegram.Client, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "create logger")
 		}
-		opts.Logger = logger
+		opts.Logger = logzap.New(logger)
 	}
 	if p.Test {
 		opts.DCList = dcs.Test()

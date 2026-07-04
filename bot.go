@@ -2,53 +2,50 @@ package main
 
 import (
 	"context"
-	"flag"
 
-	"github.com/cristalhq/acmd"
 	"github.com/go-faster/errors"
 	"github.com/gotd/td/telegram"
+	"github.com/spf13/cobra"
 )
 
-func botCmd() acmd.Command {
-	return acmd.Command{
-		Name:        "bot",
-		Description: "Create session via bot token authorization",
-		ExecFunc:    botExec,
-	}
-}
-
-func botExec(ctx context.Context, args []string) (rErr error) {
-	s := flag.NewFlagSet("bot", flag.ContinueOnError)
+func botCmd() *cobra.Command {
 	var (
 		token      string
 		gotdFlags  gotdOptions
 		printFlags printOptions
 	)
-	s.StringVar(&token, "token", "", "Bot token")
-	gotdFlags.install(s)
-	printFlags.install(s)
 
-	if err := s.Parse(args); err != nil {
-		return err
-	}
+	cmd := &cobra.Command{
+		Use:   "bot",
+		Short: "Create session via bot token authorization",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
 
-	if token == "" {
-		return errors.New("token option is required")
-	}
-
-	data, err := gotdFlags.GetSession(
-		ctx, telegram.Options{},
-		func(ctx context.Context, client *telegram.Client) error {
-			_, err := client.Auth().Bot(ctx, token)
-			if err != nil {
-				return errors.Wrap(err, "bot login")
+			if token == "" {
+				return errors.New("token option is required")
 			}
-			return nil
+
+			data, err := gotdFlags.GetSession(
+				ctx, telegram.Options{},
+				func(ctx context.Context, client *telegram.Client) error {
+					_, err := client.Auth().Bot(ctx, token)
+					if err != nil {
+						return errors.Wrap(err, "bot login")
+					}
+					return nil
+				},
+			)
+			if err != nil {
+				return err
+			}
+
+			return printSession(ctx, data, printFlags)
 		},
-	)
-	if err != nil {
-		return err
 	}
 
-	return printSession(ctx, data, printFlags)
+	cmd.Flags().StringVar(&token, "token", "", "Bot token")
+	gotdFlags.install(cmd.Flags())
+	printFlags.install(cmd.Flags())
+
+	return cmd
 }

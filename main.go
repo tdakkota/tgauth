@@ -2,16 +2,23 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
-	"github.com/cristalhq/acmd"
+	"github.com/spf13/cobra"
 )
 
-const description = `Simple CLI tool for creating gotd sessions.`
-
 func main() {
-	cmds := []acmd.Command{
+	root := &cobra.Command{
+		Use:           "tgauth",
+		Short:         "Simple CLI tool for creating gotd sessions.",
+		SilenceUsage:  true,
+		SilenceErrors: true,
+	}
+	root.AddCommand(
 		botCmd(),
 		userCmd(),
 		testCmd(),
@@ -19,12 +26,13 @@ func main() {
 		tdesktopCmd(),
 		noauthCmd(),
 		tryCmd(),
-	}
-	cfg := acmd.Config{
-		AppDescription: description,
-	}
-	if err := acmd.RunnerOf(cmds, cfg).Run(); err != nil {
+	)
+
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer cancel()
+
+	if err := root.ExecuteContext(ctx); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)
-		return
+		os.Exit(1)
 	}
 }

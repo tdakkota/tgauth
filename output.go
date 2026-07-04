@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"flag"
 	"io"
 	"os"
 	"path/filepath"
@@ -12,6 +11,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/gotd/td/session"
 	"github.com/k0kubun/pp/v3"
+	"github.com/spf13/pflag"
 )
 
 type outputFlag struct {
@@ -54,6 +54,8 @@ func (o *outputFlag) Close() error {
 	return o.close()
 }
 
+func (o outputFlag) Type() string { return "string" }
+
 type printOptions struct {
 	Pretty   bool
 	Template string
@@ -61,7 +63,7 @@ type printOptions struct {
 	Output   outputFlag
 }
 
-func (p *printOptions) install(set *flag.FlagSet) {
+func (p *printOptions) install(set *pflag.FlagSet) {
 	set.BoolVar(&p.Pretty, "pretty", false, "Prettify (if format is json)")
 	set.StringVar(&p.Template, "template", "", "Go template for formatting")
 	set.StringVar(&p.Format, "format", "json", "Printer format (available: json, pp)")

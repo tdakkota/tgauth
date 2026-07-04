@@ -2,29 +2,21 @@ package main
 
 import (
 	"context"
-	"flag"
 
 	"github.com/AlecAivazis/survey/v2"
-	"github.com/cristalhq/acmd"
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/telegram/auth"
 	"github.com/gotd/td/tg"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
-
-func userCmd() acmd.Command {
-	return acmd.Command{
-		Name:        "user",
-		Description: "Create session via plain user authorization",
-		ExecFunc:    userExec,
-	}
-}
 
 type surveyAuth struct {
 	phone    string
 	password string
 }
 
-func (s *surveyAuth) install(set *flag.FlagSet) {
+func (s *surveyAuth) install(set *pflag.FlagSet) {
 	set.StringVar(&s.phone, "phone", "", "Phone number")
 	set.StringVar(&s.password, "password", "", "Password")
 }
@@ -100,30 +92,36 @@ func (s surveyAuth) Code(ctx context.Context, sentCode *tg.AuthSentCode) (string
 	return s.askOneString("", "Activation code", "The code sent by Telegram "+via, length)
 }
 
-func userExec(ctx context.Context, args []string) (rErr error) {
-	s := flag.NewFlagSet("user", flag.ContinueOnError)
+func userCmd() *cobra.Command {
 	var (
 		ua         surveyAuth
 		gotdFlags  gotdOptions
 		printFlags printOptions
 	)
-	ua.install(s)
-	gotdFlags.install(s)
-	printFlags.install(s)
 
-	if err := s.Parse(args); err != nil {
-		return err
-	}
+	cmd := &cobra.Command{
+		Use:   "user",
+		Short: "Create session via plain user authorization",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
 
-	data, err := gotdFlags.GetSession(
-		ctx, telegram.Options{},
-		func(ctx context.Context, client *telegram.Client) error {
-			return auth.NewFlow(ua, auth.SendCodeOptions{}).Run(ctx, client.Auth())
+			data, err := gotdFlags.GetSession(
+				ctx, telegram.Options{},
+				func(ctx context.Context, client *telegram.Client) error {
+					return auth.NewFlow(ua, auth.SendCodeOptions{}).Run(ctx, client.Auth())
+				},
+			)
+			if err != nil {
+				return err
+			}
+
+			return printSession(ctx, data, printFlags)
 		},
-	)
-	if err != nil {
-		return err
 	}
 
-	return printSession(ctx, data, printFlags)
+	ua.install(cmd.Flags())
+	gotdFlags.install(cmd.Flags())
+	printFlags.install(cmd.Flags())
+
+	return cmd
 }

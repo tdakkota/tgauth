@@ -2,42 +2,39 @@ package main
 
 import (
 	"context"
-	"flag"
 
-	"github.com/cristalhq/acmd"
 	"github.com/gotd/td/telegram"
+	"github.com/spf13/cobra"
 )
 
-func noauthCmd() acmd.Command {
-	return acmd.Command{
-		Name:        "noauth",
-		Description: "Create session without authorization",
-		ExecFunc:    noauthExec,
-	}
-}
-
-func noauthExec(ctx context.Context, args []string) (rErr error) {
-	s := flag.NewFlagSet("noauth", flag.ContinueOnError)
+func noauthCmd() *cobra.Command {
 	var (
 		gotdFlags  gotdOptions
 		printFlags printOptions
 	)
-	gotdFlags.install(s)
-	printFlags.install(s)
 
-	if err := s.Parse(args); err != nil {
-		return err
-	}
+	cmd := &cobra.Command{
+		Use:   "noauth",
+		Short: "Create session without authorization",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
 
-	data, err := gotdFlags.GetSession(
-		ctx, telegram.Options{},
-		func(ctx context.Context, client *telegram.Client) error {
-			return nil
+			data, err := gotdFlags.GetSession(
+				ctx, telegram.Options{},
+				func(ctx context.Context, client *telegram.Client) error {
+					return nil
+				},
+			)
+			if err != nil {
+				return err
+			}
+
+			return printSession(ctx, data, printFlags)
 		},
-	)
-	if err != nil {
-		return err
 	}
 
-	return printSession(ctx, data, printFlags)
+	gotdFlags.install(cmd.Flags())
+	printFlags.install(cmd.Flags())
+
+	return cmd
 }
