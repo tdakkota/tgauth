@@ -23,7 +23,9 @@ single-package repo, so all tests run together.
 
 ## Architecture
 
-Each subcommand is its own file at the repo root and registers an `acmd.Command` in `main.go`:
+Each subcommand is its own file at the repo root and registers a `*cobra.Command` in `main.go`
+(`root.AddCommand(...)`). `main.go` builds the context via `signal.NotifyContext` (interrupt/SIGTERM)
+and runs it with `root.ExecuteContext(ctx)`.
 
 - `bot.go` — `bot`: auth via bot token
 - `user.go` — `user`: interactive phone/code/password auth (uses `AlecAivazis/survey` for prompts,
@@ -38,16 +40,25 @@ Each subcommand is its own file at the repo root and registers an `acmd.Command`
 
 Two shared helpers used by nearly every subcommand:
 
-- `gotd.go` (`gotdOptions`) — common gotd client flags (`-app-id`, `-app-hash`, `-DC`, `-test`,
+- `gotd.go` (`gotdOptions`) — common gotd client flags (`--app-id`, `--app-hash`, `--DC`, `--test`,
   logging flags) and `GetSession`, which runs a `telegram.Client` against an in-memory session
   storage, executes a caller-supplied auth callback, then loads and returns the resulting
-  `session.Data`.
-- `output.go` (`printOptions`) — common output flags (`-format` json/pp, `-pretty`, `-template`,
-  `-output`) and `printData`/`printSession` to render whatever the auth flow produced.
+  `session.Data`. When `--log` is set, it builds a `*zap.Logger` and wraps it with
+  `github.com/gotd/log/logzap.New(...)` before assigning to `telegram.Options.Logger` — gotd's
+  logger port is now `github.com/gotd/log.Logger`, not `*zap.Logger` directly.
+- `output.go` (`printOptions`) — common output flags (`--format` json/pp, `--pretty`, `--template`,
+  `--output`) and `printData`/`printSession` to render whatever the auth flow produced.
 
-The pattern for adding a new subcommand: define `xxxCmd() acmd.Command`, parse its own
-`flag.FlagSet` embedding `gotdOptions`/`printOptions` as needed, call `gotdFlags.GetSession(...)`
-with an auth callback, then `printSession(...)`, and register it in `main.go`.
+Both `install` methods take a `*pflag.FlagSet` (cobra's `cmd.Flags()`), not the stdlib
+`flag.FlagSet`. Custom flag value types (`outputFlag` in `output.go`, `levelValue` wrapping
+`zapcore.Level` in `gotd.go`) implement `pflag.Value`'s extra `Type() string` method on top of
+`String()`/`Set()`.
+
+The pattern for adding a new subcommand: define `xxxCmd() *cobra.Command`, register its own flags
+on `cmd.Flags()` plus `gotdFlags.install(cmd.Flags())`/`printFlags.install(cmd.Flags())` as needed,
+implement `RunE` using `cmd.Context()` for the context, call `gotdFlags.GetSession(...)` with an
+auth callback, then `printSession(...)`, and register it via `root.AddCommand(xxxCmd())` in
+`main.go`.
 
 ## CI
 
