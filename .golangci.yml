@@ -1,99 +1,85 @@
-linters-settings:
-  govet:
-    check-shadowing: true
-  gocyclo:
-    min-complexity: 15
-  maligned:
-    suggest-new: true
-  dupl:
-    threshold: 120
-  goconst:
-    min-len: 2
-    min-occurrences: 3
-  misspell:
-    locale: US
-  lll:
-    line-length: 140
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - experimental
-      - opinionated
-      - performance
-      - style
-    disabled-checks:
-      - hugeParam
-      - rangeValCopy
-      - exitAfterDefer
-      - whyNoLint
-      - singleCaseSwitch
-      - commentedOutCode
-
+version: "2"
 linters:
-  disable-all: true
+  default: standard
   enable:
-    - deadcode
-    - depguard
     - dogsled
-    - dupl
     - errcheck
-    - gochecknoinits
-    - goconst
     - gocritic
-    - gofmt
-    - goimports
-    - revive
     - gosec
-    - gosimple
     - govet
     - ineffassign
-    - lll
     - misspell
     - nakedret
+    - revive
     - staticcheck
-    - structcheck
-    - stylecheck
-    - typecheck
     - unconvert
     - unparam
-    - unused
-    - varcheck
     - whitespace
-    - gochecknoglobals
-    - gocognit
-
-  # Do not enable:
-  # - wsl       (too opinionated about newlines)
-  # - godox     (todos are OK)
-  # - bodyclose (false positives on helper functions)
-  # - prealloc  (not worth it in scope of this project)
-  # - maligned  (same as prealloc)
-  # - funlen    (gocyclo is enough)
-
-issues:
-  exclude-use-default: false
-  exclude-rules:
-    # Allow embed globals
-    - source: "embed\\.FS"
-      linters: [ gochecknoglobals ]
-
-    # Exclude go:generate from lll
-    - source: "//go:generate"
-      linters: [ lll ]
-
-    # Disable linters that are annoying in tests.
-    - path: _test\.go
-      linters:
-        - gocyclo
-        - errcheck
-        - dupl
-        - gosec
-        - funlen
-        - goconst
-        - gocognit
-        - scopelint
-        - lll
-        - gochecknoglobals
-    # Ignore shadowing of err.
-    - linters: [ govet ]
-      text: 'declaration of "(err|ctx|log)"'
+    - modernize
+  settings:
+    gocritic:
+      disabled-checks:
+        - hugeParam # We don't care about huge parameters much. Too many false positives.
+        - rangeValCopy # We don't care about range copies much. Too many false positives.
+        - unnecessaryBlock # Sometimes we need to use blocks for readability.
+        - ptrToRefParam # Too many false positives.
+        - exitAfterDefer # Too many false positives.
+      enabled-tags:
+        - diagnostic
+        - experimental
+        - opinionated
+        - performance
+        - style
+    gosec: # gosec is annoying and have a lot of false-positive results.
+      excludes:
+        - G115
+        - G117
+        - G118
+        - G703
+        - G704
+        - G705
+    lll:
+      line-length: 140
+    misspell:
+      locale: US
+    staticcheck:
+      checks:
+        - "*"
+        - "-QF1001" # Suggested simplification via De Morgan's law is not always better.
+        - "-QF1008" # Too much false positives, embedding is fine.
+  exclusions:
+    generated: lax
+    rules:
+      # Disable linters that are annoying in tests.
+      - linters:
+          - dupl
+          - errcheck
+          - funlen
+          - gocognit
+          - goconst
+          - gocyclo
+          - gosec
+          - lll
+          - scopelint
+        path: _test\.go
+      - linters:
+          - revive
+        path: _test\.go
+        text: unused-parameter
+      # exported and package-comments are for public library APIs; not required for internal app code.
+      - linters:
+          - revive
+        path: ^(cmd|internal)/
+        text: "exported: "
+      - linters:
+          - revive
+        path: ^(cmd|internal)/
+        text: "package-comments: should have a package comment"
+formatters:
+  enable:
+    - goimports
+    - gofumpt
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/tdakkota/tgauth
