@@ -16,11 +16,8 @@ jobs:
       go: stable
   cover:
     uses: go-faster/x/.github/workflows/cover.yml@main
-    permissions:
-      contents: read
-      id-token: write
+    secrets: inherit
     with:
-      use-oidc: true
       # submodules: true
       go: stable
   lint:
