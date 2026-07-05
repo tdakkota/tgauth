@@ -10,7 +10,7 @@ require (
 	github.com/k0kubun/pp/v3 v3.5.1
 	github.com/mdp/qrterminal/v3 v3.2.1
 	github.com/spf13/cobra v1.10.2
-	github.com/spf13/pflag v1.0.9
+	github.com/spf13/pflag v1.0.10
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.28.0
 	rsc.io/qr v0.2.0
