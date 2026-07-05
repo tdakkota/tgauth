@@ -1,10 +1,7 @@
-# tgauth 
+# tgauth
 
-[![build-img]][build-url]
 [![pkg-img]][pkg-url]
-[![reportcard-img]][reportcard-url]
 [![coverage-img]][coverage-url]
-[![version-img]][version-url]
 
 Simple CLI tool for creating gotd sessions.
 
@@ -47,13 +44,7 @@ $ tgauth bot -token 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew1
 $ tgauth qr
 ```
 
-[build-img]: https://github.com/tdakkota/tgauth/workflows/Coverage/badge.svg
-[build-url]: https://github.com/tdakkota/tgauth/actions
 [pkg-img]: https://pkg.go.dev/badge/tdakkota/tgauth
 [pkg-url]: https://pkg.go.dev/github.com/tdakkota/tgauth
-[reportcard-img]: https://goreportcard.com/badge/tdakkota/tgauth
-[reportcard-url]: https://goreportcard.com/report/tdakkota/tgauth
 [coverage-img]: https://codecov.io/gh/tdakkota/tgauth/branch/main/graph/badge.svg
 [coverage-url]: https://codecov.io/gh/tdakkota/tgauth
-[version-img]: https://img.shields.io/github/v/release/tdakkota/tgauth
-[version-url]: https://github.com/tdakkota/tgauth/releases
