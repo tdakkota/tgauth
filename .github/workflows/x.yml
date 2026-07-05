@@ -16,6 +16,7 @@ jobs:
       go: stable
   cover:
     uses: go-faster/x/.github/workflows/cover.yml@main
+    secrets: inherit
     with:
       # submodules: true
       go: stable
