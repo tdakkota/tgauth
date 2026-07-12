@@ -101,7 +101,7 @@ func tdesktopCmd() *cobra.Command {
 				return errors.Wrap(err, "convert")
 			}
 
-			return printSession(ctx, data, printFlags)
+			return printSession(ctx, data, &printFlags)
 		},
 	}
 

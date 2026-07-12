@@ -27,15 +27,16 @@ func (o outputFlag) String() string {
 func (o *outputFlag) Set(s string) error {
 	o.Value = s
 
-	o.w = os.Stdout
-	if s != "" {
-		file, err := os.Create(filepath.Clean(s))
-		if err != nil {
-			return err
-		}
-		o.w = file
-		o.close = file.Close
+	if s == "-" {
+		o.w = os.Stdout
+		return nil
 	}
+	file, err := os.Create(filepath.Clean(s))
+	if err != nil {
+		return err
+	}
+	o.w = file
+	o.close = file.Close
 	return nil
 }
 
@@ -67,7 +68,9 @@ func (p *printOptions) install(set *pflag.FlagSet) {
 	set.BoolVar(&p.Pretty, "pretty", false, "Prettify (if format is json)")
 	set.StringVar(&p.Template, "template", "", "Go template for formatting")
 	set.StringVar(&p.Format, "format", "json", "Printer format (available: json, pp)")
-	set.Var(&p.Output, "output", "output (default: writes to stdout)")
+	set.Var(&p.Output, "output", "output file path, or '-' for stdout (default: session.json)")
+
+	p.Output.Value = "session.json"
 }
 
 func (p printOptions) printData(data any) error {
@@ -94,9 +97,16 @@ func (p printOptions) printData(data any) error {
 	}
 }
 
-func printSession(ctx context.Context, data *session.Data, opts printOptions) error {
+func printSession(ctx context.Context, data *session.Data, opts *printOptions) error {
 	if ctx.Err() != nil {
 		return nil
 	}
+
+	if opts.Output.Value == "session.json" && opts.Output.w == nil {
+		if err := opts.Output.Set("session.json"); err != nil {
+			return err
+		}
+	}
+
 	return opts.printData(data)
 }

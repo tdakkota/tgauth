@@ -39,7 +39,7 @@ func botCmd() *cobra.Command {
 				return err
 			}
 
-			return printSession(ctx, data, printFlags)
+			return printSession(ctx, data, &printFlags)
 		},
 	}
 
