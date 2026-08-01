@@ -40,9 +40,16 @@ func tryCmd() *cobra.Command {
 				data = d
 			}
 
-			storage := &session.StorageMemory{}
-			if err := storage.StoreSession(ctx, data); err != nil {
+			// Normalize the session: gotd silently ignores a file it can't
+			// parse and connects unauthorized, which surfaces much later as a
+			// confusing 401.
+			parsed, err := decodeSession(ctx, data)
+			if err != nil {
 				return errors.Wrap(err, "invalid session")
+			}
+			storage := &session.StorageMemory{}
+			if err := (&session.Loader{Storage: storage}).Save(ctx, parsed); err != nil {
+				return errors.Wrap(err, "store session")
 			}
 
 			client, err := gotdFlags.Client(telegram.Options{
