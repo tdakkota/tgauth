@@ -79,7 +79,7 @@ func (p printOptions) printData(data any) error {
 		if err != nil {
 			return err
 		}
-		return t.Execute(&p.Output, t)
+		return t.Execute(&p.Output, data)
 	}
 
 	switch p.Format {
@@ -108,5 +108,10 @@ func printSession(ctx context.Context, data *session.Data, opts *printOptions) e
 		}
 	}
 
-	return opts.printData(data)
+	f, err := encodeSession(ctx, data)
+	if err != nil {
+		return errors.Wrap(err, "encode session")
+	}
+
+	return opts.printData(f)
 }
