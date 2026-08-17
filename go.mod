@@ -11,7 +11,7 @@ require (
 	github.com/mdp/qrterminal/v3 v3.2.1
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.0
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.28.0
 	rsc.io/qr v0.2.0
@@ -22,7 +22,6 @@ require (
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/coder/websocket v1.8.15 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dlclark/regexp2 v1.12.0 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
@@ -40,7 +39,6 @@ require (
 	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/ogen-go/ogen v1.23.0 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/refraction-networking/utls v1.8.2 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
